@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
 import fs from "fs/promises";
-import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,9 +13,9 @@ async function setupDatabase() {
     });
 
     await connection.query(
-      `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`
+      `CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``
     );
-    await connection.query(`USE ${process.env.DB_NAME}`);
+    await connection.query(`USE \`${process.env.DB_NAME}\``);
 
     // Execute migration file
     const sql = await fs.readFile("./migrations/01_initial_schema.sql", "utf8");

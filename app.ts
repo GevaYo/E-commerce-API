@@ -2,7 +2,7 @@ import express from "express";
 import userRoutes from "./routes/authRoutes";
 import authentication from "./middlewares/authentication";
 import testRoutes from "./routes/testRoutes";
-import paymentRoutes from "@routes/paymentRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
 
 const app = express();
 

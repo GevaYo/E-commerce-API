@@ -10,4 +10,7 @@ const rapydClient = new RapydClient();
 const paymentService = new PaymentService(rapydClient, DatabaseService);
 const paymentController = new PaymentController(paymentService);
 
+router.get('/pay-test', (req, res) => {
+    res.json({message: 'test'});
+})
 export default router;
