@@ -28,10 +28,8 @@ class AuthController {
   public loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email: userEmail, password: userPassword } = req.body;
     try {
-      // Find user by email
       const user = await this.userService.findUserByEmail(userEmail);
 
-      // Extract password and user data
       if (!user) {
         this.sendInvalidCredentials(res, "Email");
         return;
@@ -39,7 +37,6 @@ class AuthController {
 
       const { password: hashedPassword, ...userWithoutPassword } = user;
 
-      // Verify password
       const isPasswordValid = await this.authService.comparePasswords(
         userPassword,
         hashedPassword
