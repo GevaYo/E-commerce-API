@@ -20,26 +20,31 @@ export class RapydClient {
     method: Method,
     path: string,
     salt: string,
-    timestamp: number,
+    timestamp: string,
     body?: any
   ): string {
+    const bodyString = body ? JSON.stringify(body) : "";
     const toSign =
-      method +
+      method.toLowerCase() +
       path +
       salt +
       timestamp +
       this.accessKey +
       this.secretKey +
-      (body ? JSON.stringify(body) : "");
-    return crypto
-      .createHmac("sha256", this.secretKey)
-      .update(toSign)
-      .digest("hex");
+      bodyString;
+
+    const hash = crypto.createHmac("sha256", this.secretKey);
+    hash.update(toSign);
+    const signature = Buffer.from(hash.digest("hex")).toString("base64");
+
+    console.log("Generated Signature:", signature);
+
+    return signature;
   }
 
   public async makeRequest(method: Method, path: string, body?: any) {
     const salt = crypto.randomBytes(12).toString("hex");
-    const timestamp = Math.round(new Date().getTime() / 1000);
+    const timestamp = Math.round(new Date().getTime() / 1000).toString();
     const signature = this.generateSignature(
       method,
       path,

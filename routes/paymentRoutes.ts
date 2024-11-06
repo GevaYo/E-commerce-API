@@ -4,13 +4,13 @@ import PaymentService from "../services/rapyd/PaymentService";
 import PaymentController from "../controllers/PaymentController";
 import DatabaseService from "../services/db/DatabaseService";
 
-
 const router = Router();
 const rapydClient = new RapydClient();
-const paymentService = new PaymentService(rapydClient, DatabaseService);
+const paymentService = new PaymentService(DatabaseService, rapydClient);
 const paymentController = new PaymentController(paymentService);
 
-router.get('/pay-test', (req, res) => {
-    res.json({message: 'test'});
-})
+router.get("/pay-test", async (req, res) => {
+  const response = await paymentService.getCountries();
+  res.json({ message: "test", response });
+});
 export default router;
