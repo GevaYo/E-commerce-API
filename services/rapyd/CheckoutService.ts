@@ -1,7 +1,7 @@
 import { RapydClient } from "../rapyd/RapydClient";
 import { RapydBaseService } from "./BaseService";
 import DatabaseService from "../db/DatabaseService";
-import { CheckoutPage, CheckoutResult } from "../../types/checkout";
+import { CheckoutPage, CheckoutResult } from "../../dtos/checkout";
 
 export default class CheckoutService extends RapydBaseService {
   constructor(db: typeof DatabaseService, rapydClient: RapydClient) {

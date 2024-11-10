@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import CheckoutService from "../services/rapyd/CheckoutService";
-import { CheckoutPage } from "../types/checkout";
+import { CheckoutPage } from "../dtos/checkout";
 
 class CheckoutController {
   private checkoutService: CheckoutService;
