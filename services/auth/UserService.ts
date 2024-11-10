@@ -1,5 +1,6 @@
 import DatabaseService from "../db/DatabaseService";
 import AuthService from "./AuthService";
+import logger from "../../utils/logger";
 import {
   RegisterUserDto,
   LoginUserDto,
@@ -19,6 +20,7 @@ class UserService {
   public async createUser(userData: RegisterUserDto): Promise<UserResponseDto> {
     const existingUser = await this.findUserByEmail(userData.email);
     if (existingUser) {
+      logger.error("User already exists");
       throw new Error("User already exists");
     }
 
@@ -53,6 +55,7 @@ class UserService {
 
       return user;
     } catch (error) {
+      console.error(`Failed to create user: ${error}`);
       throw new Error(`Failed to create user: ${error}`);
     }
   }

@@ -5,6 +5,7 @@ import authentication from "./middlewares/authentication";
 import testRoutes from "./routes/testRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import logger, { stream } from "./utils/logger";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app = express();
 
@@ -19,5 +20,7 @@ app.get("/", (req, res) => {
   logger.info("GET / request received");
   res.send("Hello World");
 });
+
+app.use(errorHandler);
 
 export default app;

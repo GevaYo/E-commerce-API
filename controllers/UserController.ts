@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import AuthService from "../services/auth/AuthService";
 import UserService from "../services/auth/UserService";
 import { RegisterUserDto, LoginUserDto, AuthResponseDto } from "../dtos/user";
+import logger from "../utils/logger";
 import {
   validateLoginUserInputs,
   validateRegisterUserInputs,
@@ -24,6 +25,7 @@ class UserController {
       const userData: RegisterUserDto = req.body;
       const user = await this.userService.createUser(userData);
       res.status(201).json({ user: user });
+      logger.info("User was created successfully");
     } catch (error) {
       console.log("error:\n", error);
       res.status(400).json({ error: (error as Error).message });
@@ -46,6 +48,7 @@ class UserController {
         message: "User logged in successfully",
         authorizedUser,
       });
+      logger.info("User logged in successfully");
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
