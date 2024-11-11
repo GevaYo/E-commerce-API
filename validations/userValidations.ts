@@ -8,7 +8,7 @@ export const validateRegisterUserInputs = (body: any): string[] => {
     errors.push("Invalid email format");
   }
   if (!Validation.isValidUsername(username)) {
-    errors.push("Username must be at least 2 characters long");
+    errors.push("Username can't be empty");
   }
   if (!Validation.isValidPassword(password)) {
     errors.push("Password must be at least 6 characters long");

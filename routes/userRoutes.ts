@@ -3,15 +3,16 @@ import { validateRequestStructure } from "../middlewares/requestValidation";
 import UserController from "../controllers/UserController";
 import AuthService from "../services/auth/AuthService";
 import UserService from "../services/auth/UserService";
-import DatabaseService from "../services/db/DatabaseService";
-import { log } from "console";
+import { MySqlUserRepository } from "../repositories/mysql/MySqlUserRepository";
+import { MySqlService } from "../services/db/mysql/MySqlService";
 
 const registerFields = ["username", "email", "password"];
 const loginFields = ["email", "password"];
 
 const router = Router();
 const authService = new AuthService();
-const userService = new UserService(DatabaseService, authService);
+const userRepository = new MySqlUserRepository(new MySqlService());
+const userService = new UserService(userRepository, authService);
 const userController = new UserController(userService);
 
 router.post(

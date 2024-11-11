@@ -46,7 +46,7 @@ class UserController {
       );
       res.status(200).json({
         message: "User logged in successfully",
-        authorizedUser,
+        data: authorizedUser,
       });
       logger.info("User logged in successfully");
     } catch (error) {

@@ -1,5 +1,4 @@
-import { write } from "fs";
-import { createLogger, format, transports } from "winston";
+import { createLogger, format, transports, LoggerOptions } from "winston";
 import { addColors } from "winston/lib/winston/config";
 
 const { combine, timestamp, printf, colorize, errors } = format;
@@ -32,12 +31,14 @@ const customFormat = combine(
   })
 );
 
-const logger = createLogger({
+const loggerOptions: LoggerOptions = {
   levels: customLevels.levels,
   level: "info",
   format: customFormat,
   transports: [new transports.Console()],
-});
+};
+
+const logger = createLogger(loggerOptions);
 
 export const stream = {
   write: (message: string) => {

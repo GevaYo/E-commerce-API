@@ -15,7 +15,6 @@ export interface UserResponseDto {
   id: number;
   username: string;
   email: string;
-  createdAt: Date;
 }
 
 export interface AuthResponseDto {

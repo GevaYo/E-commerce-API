@@ -1,6 +1,8 @@
-import DatabaseService from "../db/DatabaseService";
+//import DatabaseService from "../db/DatabaseService";
+import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 import AuthService from "./AuthService";
 import logger from "../../utils/logger";
+import { User } from "../../models/user";
 import {
   RegisterUserDto,
   LoginUserDto,
@@ -10,62 +12,47 @@ import {
 
 class UserService {
   private authService: AuthService;
-  private dbService: typeof DatabaseService;
+  private userRepository: IUserRepository;
 
-  constructor(dbService: typeof DatabaseService, authService: AuthService) {
+  constructor(userRepository: IUserRepository, authService: AuthService) {
     this.authService = authService;
-    this.dbService = dbService;
+    this.userRepository = userRepository;
   }
 
   public async createUser(userData: RegisterUserDto): Promise<UserResponseDto> {
-    const existingUser = await this.findUserByEmail(userData.email);
+    const existingUser = await this.userRepository.findByEmail(userData.email);
     if (existingUser) {
-      logger.error("User already exists");
-      throw new Error("User already exists");
+      logger.error(`User with email ${userData.email} already exists`);
+      throw new Error("User with this email already exists");
     }
-
     try {
       const hashedPassword = await this.authService.hashPassword(
         userData.password
       );
-      // First query: Insert the user
-      const insertQuery = `
-            INSERT INTO users (username, email, password) 
-            VALUES (?, ?, ?)
-        `;
-      await this.dbService.query(insertQuery, [
-        userData.username,
-        userData.email,
-        hashedPassword,
-      ]);
-
-      // Second query: Get the inserted user
-      const selectQuery = `SELECT * FROM users WHERE id = LAST_INSERT_ID()`;
-      const userObj = await this.dbService.query(selectQuery);
-      if (!userObj) {
-        throw new Error("Failed to create user");
-      }
-
-      const user: UserResponseDto = {
-        id: userObj.id,
-        email: userObj.email,
-        username: userObj.username,
-        createdAt: userObj.created_at,
+      const newUser = await this.userRepository.create({
+        username: userData.username,
+        email: userData.email,
+        password: hashedPassword,
+      });
+      /*  Consider creating a mapper between a User to a UserResponseDto  */
+      const userResponse: UserResponseDto = {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
       };
 
-      return user;
+      return userResponse;
     } catch (error) {
-      console.error(`Failed to create user: ${error}`);
-      throw new Error(`Failed to create user: ${error}`);
+      logger.error("Failed to create user", { error });
+      throw new Error("Failed to create user. Please try again later.");
     }
   }
 
   public async loginUser(userData: LoginUserDto): Promise<AuthResponseDto> {
-    const userObj = await this.findUserByEmail(userData.email);
+    const userObj = await this.userRepository.findByEmail(userData.email);
     if (!userObj) {
       throw new Error("User with this email doesn't exist!");
     }
-    console.log(userObj);
     const password = await this.authService.comparePasswords(
       userData.password,
       userObj.password
@@ -80,22 +67,10 @@ class UserService {
         id: userObj.id,
         username: userObj.username,
         email: userObj.email,
-        createdAt: userObj.created_at,
       },
       token: token,
     };
     return loggedInUser;
-  }
-
-  public async findUserByEmail(email: string): Promise<any> {
-    try {
-      const query = "SELECT * FROM users WHERE email = ?";
-      const result = await this.dbService.query(query, [email]);
-      return result || null;
-    } catch (error) {
-      console.error("Database error in findUserByEmail:", error);
-      throw new Error("Failed to find user by email");
-    }
   }
 }
 
