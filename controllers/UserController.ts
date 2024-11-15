@@ -14,6 +14,15 @@ class UserController {
   constructor(userService: UserService) {
     this.userService = userService;
   }
+  public getUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const users = await this.userService.getAllUsers();
+      res.status(200).json({ users: users });
+    } catch (error) {
+      console.log("error:\n", error);
+      res.status(400).json({ error: (error as Error).message });
+    }
+  };
 
   public registerUser = async (req: Request, res: Response): Promise<void> => {
     try {

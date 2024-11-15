@@ -9,6 +9,7 @@ import {
   UserResponseDto,
   AuthResponseDto,
 } from "../../dtos/user";
+import { UserRole } from "../../models/user";
 
 class UserService {
   private authService: AuthService;
@@ -18,7 +19,10 @@ class UserService {
     this.authService = authService;
     this.userRepository = userRepository;
   }
-
+  public async getAllUsers(): Promise<User[]> {
+    const users = await this.userRepository.findAll();
+    return users;
+  }
   public async createUser(userData: RegisterUserDto): Promise<UserResponseDto> {
     const existingUser = await this.userRepository.findByEmail(userData.email);
     if (existingUser) {
@@ -33,12 +37,14 @@ class UserService {
         username: userData.username,
         email: userData.email,
         password: hashedPassword,
+        role: userData.role || UserRole.CUSTOMER,
       });
       /*  Consider creating a mapper between a User to a UserResponseDto  */
       const userResponse: UserResponseDto = {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
+        role: newUser.role,
       };
 
       return userResponse;
@@ -67,6 +73,7 @@ class UserService {
         id: userObj.id,
         username: userObj.username,
         email: userObj.email,
+        role: userObj.role,
       },
       token: token,
     };

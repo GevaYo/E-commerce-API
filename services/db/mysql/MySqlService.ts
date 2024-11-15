@@ -25,7 +25,7 @@ export class MySqlService implements IDbService {
         query,
         params
       );
-      return rows[0] as T[];
+      return rows as T[];
     } catch (error) {
       logger.error(`Failed to execute the query`);
       throw error;

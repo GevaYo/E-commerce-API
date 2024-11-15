@@ -1,7 +1,7 @@
 import * as Validation from "../utils/validation";
 
 export const validateRegisterUserInputs = (body: any): string[] => {
-  const { email, username, password } = body;
+  const { email, username, password, role } = body;
   const errors: string[] = [];
 
   if (!Validation.isValidEmail(email)) {
@@ -12,6 +12,9 @@ export const validateRegisterUserInputs = (body: any): string[] => {
   }
   if (!Validation.isValidPassword(password)) {
     errors.push("Password must be at least 6 characters long");
+  }
+  if (role && !Validation.isValidRole(role)) {
+    errors.push("Role can only be CUSTOMER");
   }
   return errors;
 };

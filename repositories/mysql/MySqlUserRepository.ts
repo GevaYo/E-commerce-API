@@ -48,8 +48,8 @@ export class MySqlUserRepository implements IUserRepository {
     user: Omit<User, "id" | "created_at" | "updated_at">
   ): Promise<User> {
     try {
-      const insertQuery = `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`;
-      const param = [user.username, user.email, user.password];
+      const insertQuery = `INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)`;
+      const param = [user.username, user.email, user.password, user.role];
       await this.dbService.executeQuery(insertQuery, param);
 
       const userQuery = `SELECT * FROM users WHERE id = LAST_INSERT_ID()`;
