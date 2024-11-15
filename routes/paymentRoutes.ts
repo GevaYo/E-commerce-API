@@ -5,6 +5,7 @@ import PaymentController from "../controllers/PaymentController";
 import DatabaseService from "../services/db/DatabaseService";
 import CheckoutService from "../services/rapyd/CheckoutService";
 import CheckoutController from "../controllers/CheckoutController";
+import authentication from "../middlewares/authentication";
 
 const router = Router();
 
@@ -20,6 +21,6 @@ router.get("/pay-test", async (req, res) => {
   res.json({ message: "test", response });
 });
 
-router.post("/checkout", checkoutController.createCheckoutPage);
+router.post("/checkout", authentication, checkoutController.createCheckoutPage);
 
 export default router;
