@@ -1,4 +1,4 @@
-# Rapyd Integration Project
+# E-Commerce API
 
 This project aims to integrate Rapyd payment services into a web application. It includes a Node.js server using Express.js, a MySQL database for storing user and payment information, and Rapyd API for payment processing.
 
